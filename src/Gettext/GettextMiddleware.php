@@ -53,9 +53,11 @@ class GettextMiddleware implements ServerMiddlewareInterface
 
         // If not active, redirect to the main lang
         if (!in_array($lang, $i18n['langs'])) {
-            $lang = 'fr';
+            $lang = isset($i18n['default_lang']) ? $i18n['default_lang'] : 'fr';
 
-            return $this->redirect($request, $uri->withPath('/' . $lang . '/', substr($uri->getPath(), 4)));
+            if (isset($i18n['redirect']) && $i18n['redirect']) {
+                return $this->redirect($request, $uri->withPath('/' . $lang . '/', substr($uri->getPath(), 4)));
+            }
         }
         define('EKA_LANG', $lang);
         $locale = $i18n['locales'][$lang];
